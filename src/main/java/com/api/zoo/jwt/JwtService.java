@@ -44,22 +44,31 @@ public class JwtService {
             .compact();
     }
 
+    public UsernamePasswordAuthenticationToken getAuthentication(String token){
+        try {
+            String email = getUsernameFromToken(token);
+            String role = getRoleFromToken(token);
+            Collection<SimpleGrantedAuthority> authorities =
+                Arrays.stream(("ROLE_" + role.toUpperCase()).split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+            return new UsernamePasswordAuthenticationToken(email, null, authorities);
+        } catch (JwtException e){
+            return null;
+        }
+    }
+
     public String getUsernameFromToken(String token) {
         return getClaim(token, Claims::getSubject);
     }
 
     public Long getUserIdFromToken(String token) {
-        String idString = getClaim(token, claims -> claims.get("id", String.class));
-        return Long.parseLong(idString);
-    }
+        Integer idInteger = getClaim(token, claims -> claims.get("id", Integer.class));
+        return idInteger != null ? idInteger.longValue() : null;
+    }    
 
     public String getRoleFromToken(String token) {
         return getClaim(token, claims -> claims.get("role", String.class));
-    }
-
-    public Boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public Boolean isTokenExpired(String token) {

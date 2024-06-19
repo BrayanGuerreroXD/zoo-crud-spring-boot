@@ -1,5 +1,7 @@
 package com.api.zoo.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,4 +20,10 @@ public class Zone {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime updatedAt;
 }

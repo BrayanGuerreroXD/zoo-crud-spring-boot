@@ -61,6 +61,12 @@ public class GlobalExceptionHandler {
             case "class com.api.zoo.exception.EmailAlreadyExistsException":
                 exceptionResponseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, "Email already exists");
                 break;
+            case "class com.api.zoo.exception.ZoneNameAlreadyExistsException":
+                exceptionResponseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, "Zone name already exists");
+                break;
+            case "class com.api.zoo.exception.SpeciesNameAlreadyExistsException":
+                exceptionResponseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, "Species name already exists");
+                break;
             case "class com.api.zoo.exception.TokenNullException":
                 exceptionResponseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, "Token cannot be null");
                 break;
@@ -72,6 +78,9 @@ public class GlobalExceptionHandler {
                 break;
             case "class com.api.zoo.exception.TokenParsingException":
                 exceptionResponseDto = new ExceptionResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid token argument");
+                break;
+            case "class com.api.zoo.exception.EntityNotFoundException":
+                exceptionResponseDto = new ExceptionResponseDto(HttpStatus.NOT_FOUND, exception.getMessage());
                 break;
             default:
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

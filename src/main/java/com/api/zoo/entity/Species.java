@@ -1,5 +1,7 @@
 package com.api.zoo.entity;
 
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -28,4 +30,10 @@ public class Species {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "zone_id", referencedColumnName = "id", nullable = false)
     private Zone zone;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column
+    private LocalDateTime updatedAt;
 }
