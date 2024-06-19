@@ -59,7 +59,7 @@ public class TokenServiceImpl implements TokenService {
 
         // Remove expired tokens
         tokens.removeIf(token -> {
-            if (jwtService.isTokenExpired(token.getValue())) {
+            if (Boolean.TRUE.equals(jwtService.isTokenExpired(token.getValue()))) {
                 this.removeTokenByValue(token.getValue(), userId);
                 return true;
             }
@@ -84,7 +84,7 @@ public class TokenServiceImpl implements TokenService {
     public void validateJwtToken(String token, Long userId) {
         if (Boolean.FALSE.equals(tokenRepository.existsByValueAndUserId(token, userId)))
             throw new JwtAuthException("Token is not valid");
-        if (jwtService.isTokenExpired(token)) {
+        if (Boolean.TRUE.equals(jwtService.isTokenExpired(token))) {
             // Only return a exception because the login filter will remove the token from the database
             throw new JwtAuthException("Token is expired");
         }

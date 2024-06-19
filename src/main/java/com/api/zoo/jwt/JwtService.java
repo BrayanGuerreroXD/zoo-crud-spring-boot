@@ -1,17 +1,28 @@
 package com.api.zoo.jwt;
 
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.api.zoo.exception.InvalidTokenException;
+import com.api.zoo.exception.TokenParsingException;
+
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 @Service
 public class JwtService {
@@ -38,44 +49,50 @@ public class JwtService {
     }
 
     public Long getUserIdFromToken(String token) {
-        Claims claims = getAllClaims(token);
-        String id = claims.get("id").toString();
-        return Long.parseLong(id);
+        String idString = getClaim(token, claims -> claims.get("id", String.class));
+        return Long.parseLong(idString);
     }
 
     public String getRoleFromToken(String token) {
-        Claims claims = getAllClaims(token);
-        return claims.get("role").toString();
+        return getClaim(token, claims -> claims.get("role", String.class));
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public Boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public boolean isTokenExpired(String token) {
-        return getExpiration(token).before(new Date());
-    }  
-
-    private Claims getAllClaims(String token) {
-        return Jwts
-            .parserBuilder()
-            .setSigningKey(getKey())
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+    public Boolean isTokenExpired(String token) {
+        try {
+            Date expiredDate = getClaim(token, Claims::getExpiration);
+            return expiredDate.before(new Date());
+        } catch (SignatureException e) {
+            throw new InvalidTokenException();
+        } catch (IllegalArgumentException e) {
+            throw new TokenParsingException();
+        }
     }
 
-    private Key getKey() {
-        return Keys.hmacShaKeyFor(jwtSecretKey.getBytes());
-    }
-
-    public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
+    private <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Date getExpiration(String token) {
-        return getClaim(token, Claims::getExpiration);
+    private Claims getAllClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        } catch (JwtException e) {
+            return null;
+        }
+    }
+
+    private Key getKey() {
+        return Keys.hmacShaKeyFor(jwtSecretKey.getBytes());
     }
 }

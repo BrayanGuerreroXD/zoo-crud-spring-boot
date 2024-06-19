@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +37,22 @@ public class GlobalExceptionHandler {
         errors.put(MESSAGE, ex.getMessage());
         return errors;
     }
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({BadCredentialsException.class})
+    public Map<String, String> handleBadCredentialsException (BadCredentialsException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(MESSAGE, "Bad credentials");
+        return errors;
+    }
+    
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({AccessDeniedException.class})
+    public Map<String, String> handleAccessDeniedException (AccessDeniedException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(MESSAGE, "Access is denied");
+        return errors;
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleException(Exception exception) {
@@ -48,6 +66,12 @@ public class GlobalExceptionHandler {
                 break;
             case "class com.api.zoo.exception.InvalidTokenPrefixException":
                 exceptionResponseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, "Invalid token prefix");
+                break;
+            case "class com.api.zoo.exception.InvalidTokenException":
+                exceptionResponseDto = new ExceptionResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid token signature");
+                break;
+            case "class com.api.zoo.exception.TokenParsingException":
+                exceptionResponseDto = new ExceptionResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid token argument");
                 break;
             default:
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
