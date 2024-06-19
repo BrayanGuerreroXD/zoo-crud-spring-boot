@@ -18,6 +18,7 @@ import com.api.zoo.service.AnimalService;
 import com.api.zoo.service.SpeciesService;
 import com.api.zoo.service.ZoneService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -40,12 +41,21 @@ public class SpeciesServiceImpl implements SpeciesService {
     }
 
     @Override
+    public Species getSpeciesByIdEntity(Long id) {
+        Optional<Species> species = speciesRepository.findById(id);
+        if (Boolean.FALSE.equals(species.isPresent()))
+            throw new EntityNotFoundException(String.format(SPECIES_NOT_FOUND, id));
+        return species.get();
+    }
+
+    @Override
     public List<SpeciesResponseDto> getAllSpecies() {
         return speciesRepository.findAll().stream().map(species -> new ModelMapper().map(species, SpeciesResponseDto.class))
                 .toList();
     }
 
     @Override
+    @Transactional
     public SpeciesResponseDto createSpecies(SpeciesRequestDto speciesRequestDto) {
         ModelMapper modelMapper = new ModelMapper();
         Species species = modelMapper.map(speciesRequestDto, Species.class);
@@ -59,12 +69,11 @@ public class SpeciesServiceImpl implements SpeciesService {
         species.setZone(zone);
         species.setCreatedAt(LocalDateTime.now());
 
-        Species speciesEntity = speciesRepository.save(species);
-
-        return modelMapper.map(speciesEntity, SpeciesResponseDto.class);
+        return modelMapper.map(speciesRepository.save(species), SpeciesResponseDto.class);
     }
 
     @Override
+    @Transactional
     public SpeciesResponseDto updateSpecies(Long id, SpeciesRequestDto speciesRequestDto) {
         Optional<Species> species = speciesRepository.findById(id);
         if (Boolean.FALSE.equals(species.isPresent()))
@@ -87,6 +96,7 @@ public class SpeciesServiceImpl implements SpeciesService {
     }
 
     @Override
+    @Transactional
     public void deleteSpecies(Long id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteSpecies'");
