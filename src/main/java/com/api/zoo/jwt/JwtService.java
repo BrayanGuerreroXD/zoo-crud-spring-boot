@@ -97,7 +97,7 @@ public class JwtService {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         } catch (JwtException e) {
-            return null;
+            throw new JwtException("Invalid token signature");
         }
     }
 

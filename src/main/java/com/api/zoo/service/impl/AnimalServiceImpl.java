@@ -1,6 +1,8 @@
 package com.api.zoo.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.zoo.dto.request.AnimalRequestDto;
 import com.api.zoo.dto.response.AnimalResponseDto;
+import com.api.zoo.dto.response.CountResponseDto;
 import com.api.zoo.entity.Animal;
 import com.api.zoo.entity.Species;
 import com.api.zoo.exception.EntityNotFoundException;
@@ -80,22 +83,32 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    public Boolean existsAnimalByZoneId(Long zoneId) {
-        return animalRepository.existsAnimalBySpeciesZoneId(zoneId);
-    }
-
-    @Override
-    public Boolean existsAnimalBySpeciesId(Long speciesId) {
-        return animalRepository.existsAnimalBySpeciesId(speciesId);
-    }
-
-    @Override
     @Transactional
     public void deleteAnimal(Long id) {
         Optional<Animal> animal = animalRepository.findById(id);
         if (Boolean.FALSE.equals(animal.isPresent()))
             throw new EntityNotFoundException(String.format(ANIMAL_NOT_FOUND, id));
         animalRepository.delete(animal.get());
+    }
+
+    @Override
+    public CountResponseDto countAnimalBySpeciesId(Long speciesId) {
+        Integer count = animalRepository.countAnimalBySpeciesId(speciesId);
+        return new CountResponseDto(count);
+    }
+
+    @Override
+    public CountResponseDto countAnimalBySpeciesZoneId(Long zoneId) {
+        Integer count = animalRepository.countAnimalBySpeciesZoneId(zoneId);
+        return new CountResponseDto(count);
+    }
+
+    @Override
+    public List<AnimalResponseDto> findAllByCreatedAtBetween(LocalDate registerDate) {
+        LocalDateTime start = registerDate.atStartOfDay();
+        LocalDateTime end = registerDate.atTime(LocalTime.MAX);
+        return animalRepository.findAllByCreatedAtBetween(start, end).stream()
+                .map(animal -> new ModelMapper().map(animal, AnimalResponseDto.class)).toList();
     }
     
 }

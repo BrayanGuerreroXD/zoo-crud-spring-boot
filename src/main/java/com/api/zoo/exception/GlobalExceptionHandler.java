@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.api.zoo.dto.response.ExceptionResponseDto;
 
@@ -51,6 +52,14 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleAccessDeniedException (AccessDeniedException ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put(MESSAGE, "Access is denied");
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    public Map<String, String> handleMethodArgumentTypeMismatchException (MethodArgumentTypeMismatchException ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put(MESSAGE, "Invalid argument type");
         return errors;
     }
 

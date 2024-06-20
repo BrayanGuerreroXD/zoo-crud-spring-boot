@@ -1,5 +1,6 @@
 package com.api.zoo.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.zoo.dto.request.AnimalRequestDto;
 import com.api.zoo.dto.response.AnimalResponseDto;
+import com.api.zoo.dto.response.CountResponseDto;
 import com.api.zoo.service.AnimalService;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -54,5 +56,23 @@ public class AnimalController {
     public ResponseEntity<Void> deleteAnimal(@PathVariable Long id) {
         animalService.deleteAnimal(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/animal/count-per-species/{speciesId}")
+    @RolesAllowed("ADMIN")
+    public ResponseEntity<CountResponseDto> countAnimalBySpeciesId(@PathVariable Long speciesId) {
+        return ResponseEntity.ok(animalService.countAnimalBySpeciesId(speciesId));
+    }
+
+    @GetMapping("/animal/count-per-zone/{zoneId}")
+    @RolesAllowed("ADMIN")
+    public ResponseEntity<CountResponseDto> countAnimalBySpeciesZoneId(@PathVariable Long zoneId) {
+        return ResponseEntity.ok(animalService.countAnimalBySpeciesZoneId(zoneId));
+    }
+
+    @GetMapping("/animals/created-between/{registerDate}")
+    @RolesAllowed("ADMIN")
+    public ResponseEntity<List<AnimalResponseDto>> findAllByCreatedAtBetween(@PathVariable LocalDate registerDate) {
+        return ResponseEntity.ok(animalService.findAllByCreatedAtBetween(registerDate));
     }
 }
