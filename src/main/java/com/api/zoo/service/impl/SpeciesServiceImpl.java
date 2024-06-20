@@ -13,8 +13,9 @@ import com.api.zoo.entity.Species;
 import com.api.zoo.entity.Zone;
 import com.api.zoo.exception.EntityNotFoundException;
 import com.api.zoo.exception.SpeciesNameAlreadyExistsException;
+import com.api.zoo.exception.SpeciesWithAnimalsException;
+import com.api.zoo.repository.AnimalRepository;
 import com.api.zoo.repository.SpeciesRepository;
-import com.api.zoo.service.AnimalService;
 import com.api.zoo.service.SpeciesService;
 import com.api.zoo.service.ZoneService;
 
@@ -25,9 +26,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SpeciesServiceImpl implements SpeciesService {
 
-    private final SpeciesRepository speciesRepository;
     private final ZoneService zoneService;
-    private final AnimalService animalService;
+    private final SpeciesRepository speciesRepository;
+    private final AnimalRepository animalRepository;
 
     private static final String SPECIES_NOT_FOUND = "Species with id %s not found";
 
@@ -98,8 +99,12 @@ public class SpeciesServiceImpl implements SpeciesService {
     @Override
     @Transactional
     public void deleteSpecies(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteSpecies'");
+        Optional<Species> species = speciesRepository.findById(id);
+        if (Boolean.FALSE.equals(species.isPresent()))
+            throw new EntityNotFoundException(String.format(SPECIES_NOT_FOUND, id));
+        if (Boolean.TRUE.equals(animalRepository.existsAnimalBySpeciesId(id)))
+            throw new SpeciesWithAnimalsException();
+        speciesRepository.delete(species.get());
     }
     
 }

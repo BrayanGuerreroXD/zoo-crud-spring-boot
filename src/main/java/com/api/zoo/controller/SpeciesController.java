@@ -55,6 +55,6 @@ public class SpeciesController {
     @RolesAllowed("ADMIN")
     public ResponseEntity<Void> deleteSpecies(@PathVariable Long id) {
         speciesService.deleteSpecies(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }

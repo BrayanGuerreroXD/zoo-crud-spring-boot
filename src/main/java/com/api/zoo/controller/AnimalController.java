@@ -9,46 +9,50 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.zoo.dto.request.AnimalRequestDto;
 import com.api.zoo.dto.response.AnimalResponseDto;
 import com.api.zoo.service.AnimalService;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/animals")
 @RequiredArgsConstructor
 public class AnimalController {
     
     private final AnimalService animalService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/animal/{id}")
+    @RolesAllowed({"ADMIN", "EMPLEADO"})
     public ResponseEntity<AnimalResponseDto> getAnimalById(@PathVariable Long id) {
         return ResponseEntity.ok(animalService.getAnimalById(id));
     }
 
-    @GetMapping
+    @GetMapping("/animals")
+    @RolesAllowed({"ADMIN", "EMPLEADO"})
     public ResponseEntity<List<AnimalResponseDto>> getAllAnimals() {
         return ResponseEntity.ok(animalService.getAllAnimals());
     }
 
-    @PostMapping
+    @PostMapping("/animal")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<AnimalResponseDto> createAnimal(@Valid @RequestBody AnimalRequestDto animalRequestDto) {
         return ResponseEntity.ok().body(animalService.createAnimal(animalRequestDto));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/animal/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<AnimalResponseDto> updateAnimal(@PathVariable Long id, @Valid @RequestBody AnimalRequestDto animalRequestDto) {
         return ResponseEntity.ok(animalService.updateAnimal(id, animalRequestDto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/animal/{id}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<Void> deleteAnimal(@PathVariable Long id) {
         animalService.deleteAnimal(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }

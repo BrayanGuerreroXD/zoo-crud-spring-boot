@@ -6,7 +6,7 @@ import com.api.zoo.entity.Animal;
 
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
         
-    Boolean existsAnimalByZoneId(Long zoneId);
+    Boolean existsAnimalBySpeciesZoneId(Long zoneId);
 
     Boolean existsAnimalBySpeciesId(Long speciesId);
 

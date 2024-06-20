@@ -14,6 +14,8 @@ import com.api.zoo.dto.response.ZoneResponseDto;
 import com.api.zoo.entity.Zone;
 import com.api.zoo.exception.EntityNotFoundException;
 import com.api.zoo.exception.ZoneNameAlreadyExistsException;
+import com.api.zoo.exception.ZoneWithAnimalsException;
+import com.api.zoo.repository.AnimalRepository;
 import com.api.zoo.repository.ZoneRepository;
 import com.api.zoo.service.ZoneService;
 
@@ -23,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ZoneServiceImpl implements ZoneService {
     private final ZoneRepository zoneRepository;
+    private final AnimalRepository animalRepository;
+
     private static final String ZONE_NOT_FOUND = "Zone with id %s not found";
 
     @Override
@@ -75,10 +79,11 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     @Transactional
     public void deleteZone(Long id) {
-        // TODO: Validar que si tiene animales no se pueda eliminar, pero si solo tiene especies si se pueda
         Optional<Zone> zone = zoneRepository.findById(id);
         if (Boolean.FALSE.equals(zone.isPresent()))
-            throw new EntityNotFoundException("Zone with id " + id + " not found");
+            throw new EntityNotFoundException(String.format(ZONE_NOT_FOUND, id));
+        if (Boolean.TRUE.equals(animalRepository.existsAnimalBySpeciesZoneId(id))) 
+            throw new ZoneWithAnimalsException();
         zoneRepository.delete(zone.get());
     }
     

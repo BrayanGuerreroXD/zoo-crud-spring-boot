@@ -76,12 +76,12 @@ public class AnimalServiceImpl implements AnimalService {
         animalUpdated.setCreatedAt(animal.get().getCreatedAt());
         animalUpdated.setUpdatedAt(LocalDateTime.now());
 
-        return modelMapper.map(animalRepository.save(animal.get()), AnimalResponseDto.class);
+        return modelMapper.map(animalRepository.save(animalUpdated), AnimalResponseDto.class);
     }
 
     @Override
     public Boolean existsAnimalByZoneId(Long zoneId) {
-        return animalRepository.existsAnimalByZoneId(zoneId);
+        return animalRepository.existsAnimalBySpeciesZoneId(zoneId);
     }
 
     @Override

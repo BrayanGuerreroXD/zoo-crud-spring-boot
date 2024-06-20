@@ -82,6 +82,12 @@ public class GlobalExceptionHandler {
             case "class com.api.zoo.exception.EntityNotFoundException":
                 exceptionResponseDto = new ExceptionResponseDto(HttpStatus.NOT_FOUND, exception.getMessage());
                 break;
+            case "class com.api.zoo.exception.ZoneWithAnimalsException":
+                exceptionResponseDto = new ExceptionResponseDto(HttpStatus.CONFLICT, "Zone with animals cannot be deleted");
+                break;
+            case "class com.api.zoo.exception.SpeciesWithAnimalsException":
+                exceptionResponseDto = new ExceptionResponseDto(HttpStatus.CONFLICT, "Species with animals cannot be deleted");
+                break;
             default:
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(Map.of(exception.getClass().toString(), exception.getMessage()));
