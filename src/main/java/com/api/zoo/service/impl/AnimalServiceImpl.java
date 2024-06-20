@@ -31,6 +31,13 @@ public class AnimalServiceImpl implements AnimalService {
 
     private static final String ANIMAL_NOT_FOUND = "Animal with id %s not found";
 
+    public Animal getAnimalEntityById(Long id) {
+        Optional<Animal> animal = animalRepository.findById(id);
+        if (Boolean.FALSE.equals(animal.isPresent()))
+            throw new EntityNotFoundException(String.format(ANIMAL_NOT_FOUND, id));
+        return animal.get();
+    }
+
     @Override
     public AnimalResponseDto getAnimalById(Long id) {
         ModelMapper modelMapper = new ModelMapper();

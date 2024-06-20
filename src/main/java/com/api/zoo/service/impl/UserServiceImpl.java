@@ -1,5 +1,7 @@
 package com.api.zoo.service.impl;
 
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +12,7 @@ import com.api.zoo.dto.response.UserResponseDto;
 import com.api.zoo.entity.User;
 import com.api.zoo.enums.RoleEnum;
 import com.api.zoo.exception.EmailAlreadyExistsException;
+import com.api.zoo.exception.EntityNotFoundException;
 import com.api.zoo.repository.UserRepository;
 import com.api.zoo.service.RoleService;
 import com.api.zoo.service.UserService;
@@ -23,6 +26,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+
+    private static final String USER_NOT_FOUND = "User with id %s not found";
+
+    @Override
+    public User getUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (Boolean.FALSE.equals(user.isPresent()))
+            throw new EntityNotFoundException(String.format(USER_NOT_FOUND, id));
+        return user.get();
+    }
 
     @Override
     public UserResponseDto saveUser(UserRequestDto userRequestDto) {
