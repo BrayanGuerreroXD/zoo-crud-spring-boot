@@ -52,7 +52,10 @@ public class ZoneServiceImpl implements ZoneService {
     @Override
     @Transactional
     public ZoneResponseDto createZone(ZoneRequestDto zoneRequestDto) {
-        Zone zone = new ModelMapper().map(zoneRequestDto, Zone.class);
+        ModelMapper modelMapper = new ModelMapper();
+        zoneRequestDto.setName(zoneRequestDto.getName().toUpperCase());
+        Zone zone = modelMapper.map(zoneRequestDto, Zone.class);
+
         if (Boolean.TRUE.equals(zoneRepository.existsByName(zone.getName())))
             throw new ZoneNameAlreadyExistsException();
         zone.setCreatedAt(LocalDateTime.now());
@@ -65,12 +68,12 @@ public class ZoneServiceImpl implements ZoneService {
         Optional<Zone> zone = zoneRepository.findById(id);
         if (Boolean.FALSE.equals(zone.isPresent()))
             throw new EntityNotFoundException(String.format(ZONE_NOT_FOUND, id));
-        if (!Objects.equals(zone.get().getName(), zoneRequestDto.getName())
-                && Boolean.TRUE.equals(zoneRepository.existsByName(zoneRequestDto.getName())))
+        if (!Objects.equals(zone.get().getName(), zoneRequestDto.getName().toUpperCase())
+                && Boolean.TRUE.equals(zoneRepository.existsByName(zoneRequestDto.getName().toUpperCase())))
             throw new ZoneNameAlreadyExistsException();
 
         Zone updatedZone = zone.get();
-        updatedZone.setName(zoneRequestDto.getName());
+        updatedZone.setName(zoneRequestDto.getName().toUpperCase());
         updatedZone.setUpdatedAt(LocalDateTime.now());
 
         return new ModelMapper().map(zoneRepository.save(updatedZone), ZoneResponseDto.class);

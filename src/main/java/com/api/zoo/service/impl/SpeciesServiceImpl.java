@@ -59,6 +59,7 @@ public class SpeciesServiceImpl implements SpeciesService {
     @Transactional
     public SpeciesResponseDto createSpecies(SpeciesRequestDto speciesRequestDto) {
         ModelMapper modelMapper = new ModelMapper();
+        speciesRequestDto.setName(speciesRequestDto.getName().toUpperCase());
         Species species = modelMapper.map(speciesRequestDto, Species.class);
 
         if (Boolean.TRUE.equals(speciesRepository.existsByName(species.getName())))
@@ -81,10 +82,11 @@ public class SpeciesServiceImpl implements SpeciesService {
             throw new EntityNotFoundException(String.format(SPECIES_NOT_FOUND, id));
 
         ModelMapper modelMapper = new ModelMapper();
+        speciesRequestDto.setName(speciesRequestDto.getName().toUpperCase());
         Species speciesEntity = modelMapper.map(speciesRequestDto, Species.class);
 
-        if (!species.get().getName().equals(speciesRequestDto.getName())
-                && Boolean.TRUE.equals(speciesRepository.existsByName(speciesRequestDto.getName())))
+        if (!species.get().getName().equals(speciesEntity.getName())
+                && Boolean.TRUE.equals(speciesRepository.existsByName(speciesEntity.getName())))
             throw new SpeciesNameAlreadyExistsException();
 
         Zone zone = zoneService.getZoneByIdEntity(speciesRequestDto.getZoneId());

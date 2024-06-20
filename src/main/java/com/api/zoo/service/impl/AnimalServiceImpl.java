@@ -50,6 +50,7 @@ public class AnimalServiceImpl implements AnimalService {
     @Transactional
     public AnimalResponseDto createAnimal(AnimalRequestDto animalRequestDto) {
         ModelMapper modelMapper = new ModelMapper();
+        animalRequestDto.setName(animalRequestDto.getName().toUpperCase());
         Animal animal = modelMapper.map(animalRequestDto, Animal.class);
 
         Species species = speciesService.getSpeciesByIdEntity(animalRequestDto.getSpeciesId());
@@ -64,9 +65,10 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     @Transactional
     public AnimalResponseDto updateAnimal(Long id, AnimalRequestDto animalRequestDto) {
-        ModelMapper modelMapper = new ModelMapper();
         Optional<Animal> animal = animalRepository.findById(id);
-
+        
+        ModelMapper modelMapper = new ModelMapper();
+        animalRequestDto.setName(animalRequestDto.getName().toUpperCase());
         Animal animalUpdated = modelMapper.map(animalRequestDto, Animal.class);
 
         if (Boolean.FALSE.equals(animal.isPresent()))
