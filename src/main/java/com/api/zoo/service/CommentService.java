@@ -5,6 +5,7 @@ import java.util.List;
 import com.api.zoo.dto.request.CommentRequestDto;
 import com.api.zoo.dto.request.ReplyCommentRequestDto;
 import com.api.zoo.dto.response.CommentResponseDto;
+import com.api.zoo.dto.response.PercentageAsweredCommentsResponseDto;
 import com.api.zoo.dto.response.ReplyCommentResponseDto;
 
 public interface CommentService {
@@ -16,4 +17,6 @@ public interface CommentService {
     List<CommentResponseDto> findAllCommentByMessageMatch(String message);
 
     List<ReplyCommentResponseDto> findAllReplyCommentByMessageMatch(String message);
+
+    PercentageAsweredCommentsResponseDto percentageOfCommentsAsweredByOthers();
 }

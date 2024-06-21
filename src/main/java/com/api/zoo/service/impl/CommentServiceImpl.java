@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.api.zoo.dto.request.CommentRequestDto;
 import com.api.zoo.dto.request.ReplyCommentRequestDto;
 import com.api.zoo.dto.response.CommentResponseDto;
+import com.api.zoo.dto.response.PercentageAsweredCommentsResponseDto;
 import com.api.zoo.dto.response.ReplyCommentResponseDto;
 import com.api.zoo.entity.Animal;
 import com.api.zoo.entity.Comment;
@@ -86,6 +87,14 @@ public class CommentServiceImpl implements CommentService {
     public List<ReplyCommentResponseDto> findAllReplyCommentByMessageMatch(String message) {
         return commentRepository.findByRootCommentIsNotNullAndMessageContainingIgnoreCase(message).stream()
                 .map(comment -> new ModelMapper().map(comment, ReplyCommentResponseDto.class)).toList();
+    }
+
+    @Override
+    public PercentageAsweredCommentsResponseDto percentageOfCommentsAsweredByOthers() {
+        Long totalComments = commentRepository.countTotalComments();
+        Long commentsAsweredByOthers = commentRepository.countCommentsAsweredByOthers();
+        Double percentage = (double) commentsAsweredByOthers / totalComments * 100;
+        return new PercentageAsweredCommentsResponseDto(percentage);
     }
     
 }

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.api.zoo.exception.InvalidTokenException;
+import com.api.zoo.exception.InvalidTokenSignatureException;
 import com.api.zoo.exception.TokenParsingException;
 
 import io.jsonwebtoken.Claims;
@@ -97,7 +98,7 @@ public class JwtService {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         } catch (JwtException e) {
-            throw new JwtException("Invalid token signature");
+            throw new InvalidTokenSignatureException();
         }
     }
 
