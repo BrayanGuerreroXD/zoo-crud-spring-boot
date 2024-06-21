@@ -82,6 +82,9 @@ public class GlobalExceptionHandler {
             case "class com.api.zoo.exception.InvalidTokenPrefixException":
                 exceptionResponseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, "Invalid token prefix");
                 break;
+            case "class com.api.zoo.exception.KeywordNullOrBlankException":
+                exceptionResponseDto = new ExceptionResponseDto(HttpStatus.BAD_REQUEST, "Keyword cannot be null or blank");
+                break;
             case "class com.api.zoo.exception.InvalidTokenException":
                 exceptionResponseDto = new ExceptionResponseDto(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid token signature");
                 break;

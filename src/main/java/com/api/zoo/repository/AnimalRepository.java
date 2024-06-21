@@ -19,4 +19,6 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
 
     List<Animal> findAllByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
+    List<Animal> findByNameContainingIgnoreCase(String name);
+
 }

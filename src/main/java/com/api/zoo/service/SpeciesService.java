@@ -12,10 +12,12 @@ public interface SpeciesService {
     Species getSpeciesByIdEntity(Long id); 
 
     List<SpeciesResponseDto> getAllSpecies();
-
+    
     SpeciesResponseDto createSpecies(SpeciesRequestDto speciesRequestDto);
-
+    
     SpeciesResponseDto updateSpecies(Long id, SpeciesRequestDto speciesRequestDto);
-
+    
     void deleteSpecies(Long id);
+
+    List<SpeciesResponseDto> findByNameMatch(String name);
 }

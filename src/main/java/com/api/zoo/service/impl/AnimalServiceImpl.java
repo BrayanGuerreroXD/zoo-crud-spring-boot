@@ -119,5 +119,11 @@ public class AnimalServiceImpl implements AnimalService {
         return animalRepository.findAllByCreatedAtBetween(start, end).stream()
                 .map(animal -> new ModelMapper().map(animal, AnimalResponseDto.class)).toList();
     }
+
+    @Override
+    public List<AnimalResponseDto> findByNameMatch(String name) {
+        return animalRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(animal -> new ModelMapper().map(animal, AnimalResponseDto.class)).toList();
+    }
     
 }

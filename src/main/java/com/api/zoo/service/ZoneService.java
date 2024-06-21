@@ -18,4 +18,6 @@ public interface ZoneService {
     ZoneResponseDto updateZone(Long id, ZoneRequestDto zoneRequestDto);
 
     void deleteZone(Long id);
+
+    List<ZoneResponseDto> findByNameMatch(String name);
 }

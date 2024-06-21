@@ -1,6 +1,7 @@
 package com.api.zoo.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -73,6 +74,18 @@ public class CommentServiceImpl implements CommentService {
         reply.setRootComment(comment.get());
 
         return modelMapper.map(commentRepository.save(reply), ReplyCommentResponseDto.class);
+    }
+
+    @Override
+    public List<CommentResponseDto> findAllCommentByMessageMatch(String message) {
+        return commentRepository.findByRootCommentIsNullAndMessageContainingIgnoreCase(message).stream()
+                .map(comment -> new ModelMapper().map(comment, CommentResponseDto.class)).toList();
+    }
+
+    @Override
+    public List<ReplyCommentResponseDto> findAllReplyCommentByMessageMatch(String message) {
+        return commentRepository.findByRootCommentIsNotNullAndMessageContainingIgnoreCase(message).stream()
+                .map(comment -> new ModelMapper().map(comment, ReplyCommentResponseDto.class)).toList();
     }
     
 }

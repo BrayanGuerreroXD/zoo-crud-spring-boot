@@ -28,4 +28,6 @@ public interface AnimalService {
 
     List<AnimalResponseDto> findAllByCreatedAtBetween(LocalDate registerDate);
 
+    List<AnimalResponseDto> findByNameMatch(String name);
+
 }

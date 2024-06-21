@@ -89,5 +89,11 @@ public class ZoneServiceImpl implements ZoneService {
             throw new ZoneWithAnimalsException();
         zoneRepository.delete(zone.get());
     }
+
+    @Override
+    public List<ZoneResponseDto> findByNameMatch(String name) {
+        return zoneRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(zone -> new ModelMapper().map(zone, ZoneResponseDto.class)).toList();
+    }
     
 }

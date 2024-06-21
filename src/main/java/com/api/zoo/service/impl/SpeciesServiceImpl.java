@@ -108,5 +108,11 @@ public class SpeciesServiceImpl implements SpeciesService {
             throw new SpeciesWithAnimalsException();
         speciesRepository.delete(species.get());
     }
+
+    @Override
+    public List<SpeciesResponseDto> findByNameMatch(String name) {
+        return speciesRepository.findByNameContainingIgnoreCase(name).stream()
+                .map(species -> new ModelMapper().map(species, SpeciesResponseDto.class)).toList();
+    }
     
 }
