@@ -23,7 +23,7 @@ ___
 ___
 ### Entity-relationship model:
 
-![ERM dbeaver image](https://github.com/BrayanGuerreroXD/parking-crud-spring-boot/blob/main/src/main/resources/mer-zoo-crud.png)
+![ERM dbeaver image](./src/main/resources/mer-zoo-crud.png)
 
 ___
 
@@ -91,7 +91,7 @@ The line "spring.jpa.hibernate.ddl-auto=create" in the first run of the project 
 
 After both projects are running, it is time to test the http requests to determine the correct functioning of the API. The order of the Postman collection looks as follows:
 
-![postman collection](https://github.com/BrayanGuerreroXD/parking-crud-spring-boot/blob/main/src/main/resources/postman-collection.png)
+![postman collection](./src/main/resources/postman-collection.png)
 
 To obtain the authorization token for the ADMIN user is with the Login request, this token is obtained and can be added to each of the other requests in the ADMIN directory in the Bearer Token of type Authorization.
 
