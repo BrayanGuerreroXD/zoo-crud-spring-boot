@@ -63,8 +63,6 @@ jwt.expiration.time=${TIME_IN_MILLISECONDS}
 # ----- NUMBER OF SESSIONS PER USER
 number.sessions=${NUMBER_OF_SESSIONS}
 
-server.error.include-message=always
-
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
 
 spring.jpa.hibernate.ddl-auto=create
