@@ -10,7 +10,7 @@ ___
 
 This REST API allows the comprehensive management and control of a zoo, offering functionalities to create users with specific roles, manage information about zones, species and animals, and facilitate interaction between users through comments.
 
-The API uses Spring Security and JWT Token to manage an access control system by role (ADMIN and EMPLOYEE) using a token that expires at a time determined by the application.properties file.
+The API uses Spring Security and JWT Token to manage an access control system by role (ADMIN and EMPLEADO) using a token that expires at a time determined by the application.properties file.
 ___
 ### Technologies:
 - [Java (JDK 17)](https://www.oracle.com/co/java/technologies/javase/jdk17-archive-downloads.html "Java JDK 17") : Minimum Java jdk version to use the API is 17.
